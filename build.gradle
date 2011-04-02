@@ -1,0 +1,21 @@
+['groovy', 'code-quality'].each {
+  apply plugin: it 
+}
+
+repositories {
+  def home = System.getProperty('user.home')
+  mavenRepo name: 'mavenLocal', urls: "file:${home}/.m2/repository"
+  mavenCentral()
+}
+
+dependencies {
+  groovy      'org.codehaus.groovy:groovy:1.7.6'
+  compile     'org.slf4j:slf4j-api:1.6.1'
+  compile     'redis.clients:jedis:1.5.2'
+  compile     'org.slf4j:jcl-over-slf4j:1.6.1'
+  compile     'ch.qos.logback:logback-classic:0.9.24'
+  testCompile 'junit:junit:4.7'
+}
+
+defaultTasks 'build', 'test' 
+codeNarcConfigFileName = 'src/test/resources/codenarc/rules.groovy'
