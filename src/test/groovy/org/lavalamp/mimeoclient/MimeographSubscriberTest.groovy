@@ -1,16 +1,14 @@
 package org.lavalamp.mimeoclient
 
+import static org.junit.Assert.fail
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis
 
 
 class MimeographSubscriberTest {
-  final static LOGGER = LoggerFactory.getLogger(MimeographSubscriberTest.class)
-  
   def subscriber
   def jedis
    
@@ -33,11 +31,10 @@ class MimeographSubscriberTest {
 	Thread t = new Thread(new Runnable() {
       void run() {
         try {
-          Jedis j = new Jedis()
-          LOGGER.debug 'test'
+          Jedis j = new Jedis('localhost')
           Thread.sleep 1000
           j.publish 'mimeograph:job:test', 'mimeograph:job:test:complete'
-          j.disconnect();
+          j.disconnect()
         } catch (Exception ex) {
           fail ex.message
         }
@@ -45,7 +42,7 @@ class MimeographSubscriberTest {
     })
 
     t.start()
-    //jedis.psubscribe subscriber, 'mimeograph:job:*'
+    jedis.psubscribe subscriber, 'mimeograph:job:*'
 	t.join()
   }
 }
