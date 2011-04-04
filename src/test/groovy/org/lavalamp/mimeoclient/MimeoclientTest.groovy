@@ -14,7 +14,7 @@ class MimeoclientTest {
    
   @Before
   void setUp() {
-	jedis = new Jedis('localhost')
+    jedis = new Jedis('localhost')
     jedis.flushAll()
     client = new Mimeoclient()
   }

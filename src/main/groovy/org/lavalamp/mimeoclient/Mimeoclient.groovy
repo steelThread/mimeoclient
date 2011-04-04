@@ -18,22 +18,22 @@ class Mimeoclient {
 
   Mimeoclient() {
     LOGGER.info 'Mimeoclient starting.'
-	pool = new JedisPool(new JedisPoolConfig(), 'localhost')
+    pool = new JedisPool(new JedisPoolConfig(), 'localhost')
     subscriber = new Subscriber()
     subscribe()
-	addShutdownHook { shutdown() }
+    addShutdownHook { shutdown() }
   }
 
   //
   // start the subscriber in a new thread
   //
   def subscribe() {
-	LOGGER.info 'Starting the subscriber.'	
-	subscriberThread = Thread.start {
+    LOGGER.info 'Starting the subscriber.'  
+    subscriberThread = Thread.start {
       Jedis jedis = new Jedis('localhost')
-	  jedis.psubscribe subscriber, 'mimeograph:job:*'
-	  LOGGER.info 'Subscriber shutting down.'
-	  jedis.disconnect()
+      jedis.psubscribe subscriber, 'mimeograph:job:*'
+      LOGGER.info 'Subscriber shutting down.'
+      jedis.disconnect()
     }
   }
 
@@ -41,14 +41,14 @@ class Mimeoclient {
   // callback for the subscriber
   //
   def process(job) {
-	LOGGER.info 'Processing message {}.', job
+    LOGGER.info 'Processing message {}.', job
   }
 
   //
   // fetches the next 'n'
   //
   def queueJobs() {
-	LOGGER.info 'Requesting more work.'	
+    LOGGER.info 'Requesting more work.' 
   }
 
   // 
@@ -56,10 +56,10 @@ class Mimeoclient {
   // to stop
   //
   def shutdown() {
-	LOGGER.info 'Mimeoclient shutting down.'	
-	subscriber?.punsubscribe()
+    LOGGER.info 'Mimeoclient shutting down.'    
+    subscriber?.punsubscribe()
     subscriberThread?.join()
-	pool?.destroy()
+    pool?.destroy()
   }
 
   //
@@ -73,11 +73,11 @@ class Mimeoclient {
     }
 
     def decode(message) {
-	  Jedis jedis = pool.getResource()
-	  try { jedis.hgetAll message[0..<message.lastIndexOf(':')] } 
-	  finally {
-	    pool.returnResource(jedis)	
-	  }
+      Jedis jedis = pool.getResource()
+      try { jedis.hgetAll message[0..<message.lastIndexOf(':')] } 
+      finally {
+        pool.returnResource(jedis)  
+      }
     }
   }
 }
