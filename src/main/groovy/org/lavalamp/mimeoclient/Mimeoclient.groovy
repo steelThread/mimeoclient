@@ -35,13 +35,13 @@ abstract class Mimeoclient {
   // assumes mimeograph is installed locally to the client.
   //
   def work(work) {
-	if (work instanceof String) {
-      LOGGER.info 'Work is a string'		
-	} else if (work instanceof List) {
-      LOGGER.info 'Work is a List'				
-	} else if (work instanceof Map) {
-      LOGGER.info 'Work is a map'				
-	}
+    if (work instanceof String) {
+      LOGGER.info 'Work is a string'        
+    } else if (work instanceof List) {
+      LOGGER.info 'Work is a List'              
+    } else if (work instanceof Map) {
+      LOGGER.info 'Work is a map'               
+    }
   }
 
   //
