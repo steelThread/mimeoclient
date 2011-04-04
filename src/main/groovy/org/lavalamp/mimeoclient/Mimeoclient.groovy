@@ -9,12 +9,12 @@ import redis.clients.jedis.JedisPoolConfig
 /*
  # Protocol handler for communication with mimeograph.
  */
-class Mimeoclient {
+abstract class Mimeoclient {
   private final static LOGGER = LoggerFactory.getLogger(Mimeoclient.class)
 
-  private def pool
-  private def subscriber
-  private def subscriberThread
+  protected def pool
+  protected def subscriber
+  protected def subscriberThread
 
   Mimeoclient() {
     LOGGER.info 'Mimeoclient starting.'
@@ -22,6 +22,26 @@ class Mimeoclient {
     subscriber = new Subscriber()
     subscribe()
     addShutdownHook { shutdown() }
+  }
+
+  //
+  // process a completed job (Map)
+  //
+  abstract process(job)
+
+  //
+  // queue some work.  work can be either a string (file path),
+  // a list of strings (file paths) or a map of jobid to strings.
+  // assumes mimeograph is installed locally to the client.
+  //
+  def work(work) {
+	if (work instanceof String) {
+      LOGGER.info 'Work is a string'		
+	} else if (work instanceof List) {
+      LOGGER.info 'Work is a List'				
+	} else if (work instanceof Map) {
+      LOGGER.info 'Work is a map'				
+	}
   }
 
   //
@@ -37,23 +57,8 @@ class Mimeoclient {
     }
   }
 
-  //
-  // callback for the subscriber
-  //
-  def process(job) {
-    LOGGER.info 'Processing message {}.', job
-  }
-
-  //
-  // fetches the next 'n'
-  //
-  def queueJobs() {
-    LOGGER.info 'Requesting more work.' 
-  }
-
   // 
-  // destroy the pool and signal the subscriber
-  // to stop
+  // destroy the pool and signal the subscriber to stop
   //
   def shutdown() {
     LOGGER.info 'Mimeoclient shutting down.'    
@@ -73,10 +78,10 @@ class Mimeoclient {
     }
 
     def decode(message) {
-      Jedis jedis = pool.getResource()
+      Jedis jedis = pool.resource
       try { jedis.hgetAll message[0..<message.lastIndexOf(':')] } 
       finally {
-        pool.returnResource(jedis)  
+        pool.returnResource jedis
       }
     }
   }
