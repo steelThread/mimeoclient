@@ -28,18 +28,23 @@ abstract class Mimeoclient {
   abstract process(job)
 
   //
-  // queue some work.  work can be either a string (file path),
-  // a list of strings (file paths) or a map of jobid to strings.
-  // assumes mimeograph is installed locally to the client.
+  // queue some work. will accept either one or two
+  // arguments.  when passing an id for the job then
+  // pass that as the first arg and the file path
+  // as the second.  RuntimeException will be thrown
+  // if the job could not be started.
   //
-  def work(work) {
-    if (work instanceof String) {
-      LOGGER.info 'Work is a string'        
-    } else if (work instanceof List) {
-      LOGGER.info 'Work is a List'              
-    } else if (work instanceof Map) {
-      LOGGER.info 'Work is a map'               
+  def work(String... work) {
+	assert work.size() < 3
+    def proc  = "mimeograph -p ${work.join(' ')}".execute()
+	def out = new StringBuilder()
+	def err = new StringBuilder()
+    proc.waitForProcessOutput out, err
+    if (err) {
+	  throw new IllegalArgumentException(err.toString())
     }
+
+    out
   }
 
   //

@@ -2,6 +2,7 @@ package org.lavalamp.mimeoclient
 
 import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.fail
 
 import org.junit.After
 import org.junit.Before
@@ -46,18 +47,14 @@ class MimeoclientTest {
   }
 
   @Test
-  void workAsString() {
-    client.work 'work'
-  }
-
-  @Test
-  void workAsList() {
-    client.work(['work'])
-  }
-
-  @Test
-  void workAsMap() {
-    client.work(['id': 'work'])
+  void workWithException() {
+    try { 
+	  def result = client.work('work')
+	  println(result)
+	  fail()
+	} catch (Exception e) {
+      e.printStackTrace()		
+	}
   }
   
   ///////////////////////////////////////////////
