@@ -14,7 +14,6 @@ abstract class Mimeoclient {
 
   protected def pool
   protected def subscriber
-  protected def subscriberThread
 
   Mimeoclient() {
     LOGGER.info 'Mimeoclient starting.'
@@ -59,8 +58,7 @@ abstract class Mimeoclient {
   //
   def end() {
     LOGGER.info 'Mimeoclient shutting down.'    
-    subscriber?.punsubscribe()
-    subscriberThread?.join()
+    if (subscriber?.isSubscribed()) { subscriber.punsubscribe() }
     pool?.destroy()
   }
 

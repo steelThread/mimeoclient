@@ -45,6 +45,21 @@ class MimeoclientTest {
     t.join()
   }
 
+  @Test
+  void workAsString() {
+    client.work 'work'
+  }
+
+  @Test
+  void workAsList() {
+    client.work(['work'])
+  }
+
+  @Test
+  void workAsMap() {
+    client.work(['id': 'work'])
+  }
+  
   ///////////////////////////////////////////////
   static class FixtureMimeoclient extends Mimeoclient {
     def process(job) {
