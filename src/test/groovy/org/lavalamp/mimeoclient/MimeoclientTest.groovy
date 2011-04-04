@@ -49,7 +49,7 @@ class MimeoclientTest {
 
   @Test(expected=AssertionError.class)
   void workAcceptsOneOrTwoArgs() {
-    client.work('one', 'two', 'three')
+    client.work 'one', 'two', 'three'
   }
 
   @Test(expected=IllegalArgumentException.class)
