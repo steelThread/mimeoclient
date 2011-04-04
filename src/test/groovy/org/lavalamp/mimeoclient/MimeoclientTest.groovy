@@ -49,12 +49,12 @@ class MimeoclientTest {
   @Test
   void workWithException() {
     try { 
-	  def result = client.work('work')
-	  println(result)
-	  fail()
-	} catch (Exception e) {
-      e.printStackTrace()		
-	}
+      def result = client.work('work')
+      println(result)
+      fail()
+    } catch (Exception e) {
+      e.printStackTrace()       
+    }
   }
   
   ///////////////////////////////////////////////

@@ -35,13 +35,13 @@ abstract class Mimeoclient {
   // if the job could not be started.
   //
   def work(String... work) {
-	assert work.size() < 3
+    assert work.size() < 3
     def proc  = "mimeograph -p ${work.join(' ')}".execute()
-	def out = new StringBuilder()
-	def err = new StringBuilder()
+    def out = new StringBuilder()
+    def err = new StringBuilder()
     proc.waitForProcessOutput out, err
     if (err) {
-	  throw new IllegalArgumentException(err.toString())
+      throw new IllegalArgumentException(err.toString())
     }
 
     out
