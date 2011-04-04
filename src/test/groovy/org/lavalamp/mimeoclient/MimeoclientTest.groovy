@@ -2,6 +2,7 @@ package org.lavalamp.mimeoclient
 
 import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertTrue
 import static org.junit.Assert.fail
 
 import org.junit.After
@@ -46,15 +47,14 @@ class MimeoclientTest {
     t.join()
   }
 
-  @Test
+  @Test(expected=AssertionError.class)
+  void workAcceptsOneOrTwoArgs() {
+    client.work('one', 'two', 'three')
+  }
+
+  @Test(expected=IllegalArgumentException.class)
   void workWithException() {
-    try { 
-      def result = client.work('work')
-      println(result)
-      fail()
-    } catch (Exception e) {
-      e.printStackTrace()       
-    }
+    client.work 'work'
   }
   
   ///////////////////////////////////////////////
