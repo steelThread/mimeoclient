@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory;
 
 import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
+import redis.clients.jedis.JedisPoolConfig
 
 /*
  # Protocol handler for communication with mimeograph.
@@ -16,8 +17,8 @@ class Mimeoclient {
   private def subscriberThread
 
   Mimeoclient() {
-	pool = new JedisPool('localhost')
-	pool.init()		
+    LOGGER.info 'Mimeoclient starting.'
+	pool = new JedisPool(new JedisPoolConfig(), 'localhost')
     subscriber = new Subscriber()
     subscribe()
 	addShutdownHook { shutdown() }
@@ -29,8 +30,9 @@ class Mimeoclient {
   def subscribe() {
 	LOGGER.info 'Starting the subscriber.'	
 	subscriberThread = Thread.start {
-      jedis = new Jedis('localhost')
+      Jedis jedis = new Jedis('localhost')
 	  jedis.psubscribe subscriber, 'mimeograph:job:*'
+	  LOGGER.info 'Subscriber shutting down.'
 	  jedis.disconnect()
     }
   }
@@ -38,8 +40,8 @@ class Mimeoclient {
   //
   // callback for the subscriber
   //
-  def process() {
-	LOGGER.info 'Processing completed job {}.'
+  def process(job) {
+	LOGGER.info 'Processing message {}.', job
   }
 
   //
@@ -54,9 +56,10 @@ class Mimeoclient {
   // to stop
   //
   def shutdown() {
-	pool?.destroy()
-	subscriber?.unsubscribe()
+	LOGGER.info 'Mimeoclient shutting down.'	
+	subscriber?.punsubscribe()
     subscriberThread?.join()
+	pool?.destroy()
   }
 
   //
@@ -65,7 +68,16 @@ class Mimeoclient {
   //
   class Subscriber extends JedisPubSubAdapter {
     void onPMessage(String pattern, String channel, String message) {
-      LOGGER.info "Channel -> {} : Message -> {}", channel, message
+      LOGGER.info "Received msg.  Channel -> {} : Message -> {}", channel, message   
+      process decode(message)
+    }
+
+    def decode(message) {
+	  Jedis jedis = pool.getResource()
+	  try { jedis.hgetAll message[0..<message.lastIndexOf(':')] } 
+	  finally {
+	    pool.returnResource(jedis)	
+	  }
     }
   }
 }
