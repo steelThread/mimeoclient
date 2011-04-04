@@ -10,7 +10,7 @@ import redis.clients.jedis.JedisPoolConfig
  # Protocol handler for communication with mimeograph.
  */
 abstract class Mimeoclient {
-  private final static LOGGER = LoggerFactory.getLogger(Mimeoclient.class)
+  protected final static LOGGER = LoggerFactory.getLogger(Mimeoclient.class)
 
   protected def pool
   protected def subscriber
@@ -20,8 +20,7 @@ abstract class Mimeoclient {
     LOGGER.info 'Mimeoclient starting.'
     pool = new JedisPool(new JedisPoolConfig(), 'localhost')
     subscriber = new Subscriber()
-    subscribe()
-    addShutdownHook { shutdown() }
+    addShutdownHook { end() }
   }
 
   //
@@ -45,22 +44,20 @@ abstract class Mimeoclient {
   }
 
   //
-  // start the subscriber in a new thread
+  // start the subscriber.  Note: blocks the current thread!
   //
-  def subscribe() {
+  def connect() {
     LOGGER.info 'Starting the subscriber.'  
-    subscriberThread = Thread.start {
-      Jedis jedis = new Jedis('localhost')
-      jedis.psubscribe subscriber, 'mimeograph:job:*'
-      LOGGER.info 'Subscriber shutting down.'
-      jedis.disconnect()
-    }
+    Jedis jedis = new Jedis('localhost')
+    jedis.psubscribe subscriber, 'mimeograph:job:*'
+    LOGGER.info 'Subscriber shutting down.'
+    jedis.disconnect()
   }
 
   // 
   // destroy the pool and signal the subscriber to stop
   //
-  def shutdown() {
+  def end() {
     LOGGER.info 'Mimeoclient shutting down.'    
     subscriber?.punsubscribe()
     subscriberThread?.join()

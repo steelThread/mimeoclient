@@ -1,7 +1,6 @@
 package org.lavalamp.mimeoclient
 
 import static org.junit.Assert.assertNotNull
-import static org.junit.Assert.assertNull
 
 import org.junit.After
 import org.junit.Before
@@ -31,24 +30,26 @@ class MimeoclientTest {
 
   @After
   public void tearDown() {
-    client.shutdown()
+    client.end()
     jedis.disconnect()
   }
 
   @Test
   void onPMMessage() {
-	def t = Thread.start {
+    def t = Thread.start {
       jedis.hmset 'mimeograph:job:test', job
       jedis.publish 'mimeograph:job:test', 'mimeograph:job:test:complete'
       Thread.sleep 1000
+      client.end()
     }
+    client.connect()
     t.join()
   }
 
   ///////////////////////////////////////////////
   static class FixtureMimeoclient extends Mimeoclient {
     def process(job) {
-	  assertNull job
+      assertNotNull job
     }
   }
 }
