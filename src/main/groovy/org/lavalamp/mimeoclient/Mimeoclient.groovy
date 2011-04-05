@@ -36,20 +36,23 @@ abstract class Mimeoclient {
   //
   def work(String... work) {
     assert work.size() < 3
-    def proc  = "mimeograph -p ${work.join(' ')}".execute()
     def out = new StringBuilder()
     def err = new StringBuilder()
-    proc.waitForProcessOutput out, err
+    "mimeograph -p ${work.join(' ')}".execute()
+      .waitForProcessOutput out, err
     if (err) {
       throw new IllegalArgumentException(err.toString())
     }
   
-    def job = (out.toString() =~ /job:\S+/)[0]
+    def job = (out =~ /job:\S+/)[0]
     [id : job[4..-1]]
   }
 
   //
   // start the subscriber.  Note: blocks the current thread!
+  // subtypes will probably want to override this method by
+  // wrapping this method in a closure passed to 
+  // Thread.start
   //
   def connect() {
     LOGGER.info 'Starting the subscriber.'  

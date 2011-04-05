@@ -67,6 +67,11 @@ class MimeoclientTest {
 	assertEquals 'test', job.id
   }
 
+  @Test
+  void truth() {
+    	
+  }
+
   ///////////////////////////////////////////////
   static class FixtureMimeoclient extends Mimeoclient {
     def process(job) {
