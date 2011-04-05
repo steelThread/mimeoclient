@@ -43,8 +43,9 @@ abstract class Mimeoclient {
     if (err) {
       throw new IllegalArgumentException(err.toString())
     }
-
-    out
+  
+    def job = (out.toString() =~ /job:\S+/)[0]
+    [id : job[4..-1]]
   }
 
   //

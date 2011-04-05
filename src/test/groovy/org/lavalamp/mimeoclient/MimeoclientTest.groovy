@@ -2,8 +2,6 @@ package org.lavalamp.mimeoclient
 
 import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertTrue
-import static org.junit.Assert.fail
 
 import org.junit.After
 import org.junit.Before
@@ -56,7 +54,19 @@ class MimeoclientTest {
   void workWithException() {
     client.work 'work'
   }
+
+  @Test
+  void work() {
+	def job = client.work('./src/test/resources/test.pdf')
+	assertEquals '0000000001', job.id
+  }
   
+  @Test
+  void workWithId() {
+	def job = client.work('test', './src/test/resources/test.pdf')
+	assertEquals 'test', job.id
+  }
+
   ///////////////////////////////////////////////
   static class FixtureMimeoclient extends Mimeoclient {
     def process(job) {
