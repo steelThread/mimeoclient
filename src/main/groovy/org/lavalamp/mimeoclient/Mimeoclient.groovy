@@ -43,7 +43,7 @@ abstract class Mimeoclient {
     if (err) {
       throw new IllegalArgumentException(err.toString())
     }
-  
+
     def job = (out =~ /job:\S+/)[0]
     [id : job[4..-1]]
   }
@@ -51,22 +51,22 @@ abstract class Mimeoclient {
   //
   // start the subscriber.  Note: blocks the current thread!
   // subtypes will probably want to override this method by
-  // wrapping this method in a closure passed to 
+  // wrapping this method in a closure passed to
   // Thread.start
   //
   def connect() {
-    LOGGER.info 'Starting the subscriber.'  
+    LOGGER.info 'Starting the subscriber.'
     Jedis jedis = new Jedis('localhost')
     jedis.psubscribe subscriber, 'mimeograph:job:*'
     LOGGER.info 'Subscriber shutting down.'
     jedis.disconnect()
   }
 
-  // 
+  //
   // destroy the pool and signal the subscriber to stop
   //
   def end() {
-    LOGGER.info 'Mimeoclient shutting down.'    
+    LOGGER.info 'Mimeoclient shutting down.'
     if (subscriber?.isSubscribed()) { subscriber.punsubscribe() }
     pool?.destroy()
   }
@@ -77,13 +77,13 @@ abstract class Mimeoclient {
   //
   class Subscriber extends JedisPubSubAdapter {
     void onPMessage(String pattern, String channel, String message) {
-      LOGGER.info "Received msg.  Channel -> {} : Message -> {}", channel, message   
+      LOGGER.info "Received msg.  Channel -> {} : Message -> {}", channel, message
       process decode(message)
     }
 
     def decode(message) {
       Jedis jedis = pool.resource
-      try { jedis.hgetAll message[0..<message.lastIndexOf(':')] } 
+      try { jedis.hgetAll message[0..<message.lastIndexOf(':')] }
       finally {
         pool.returnResource jedis
       }

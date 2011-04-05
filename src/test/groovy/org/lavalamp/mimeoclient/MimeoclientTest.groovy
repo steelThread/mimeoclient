@@ -13,7 +13,7 @@ import redis.clients.jedis.Jedis
 class MimeoclientTest {
   def client
   def jedis
-   
+
   @Before
   void setUp() {
     jedis = new Jedis('localhost')
@@ -31,7 +31,7 @@ class MimeoclientTest {
   void onPMMessage() {
     def t = Thread.start {
       jedis.hmset 'mimeograph:job:test', [
-        'started'       : 'now', 
+        'started'       : 'now',
         'ended'         : 'now',
         'text'          : 'text',
         'status'        : 'success',
@@ -57,19 +57,14 @@ class MimeoclientTest {
 
   @Test
   void work() {
-	def job = client.work('./src/test/resources/test.pdf')
-	assertEquals '0000000001', job.id
-  }
-  
-  @Test
-  void workWithId() {
-	def job = client.work('test', './src/test/resources/test.pdf')
-	assertEquals 'test', job.id
+    def job = client.work('./src/test/resources/test.pdf')
+    assertEquals '0000000001', job.id
   }
 
   @Test
-  void truth() {
-    	
+  void workWithId() {
+    def job = client.work('test', './src/test/resources/test.pdf')
+    assertEquals 'test', job.id
   }
 
   ///////////////////////////////////////////////
