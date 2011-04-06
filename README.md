@@ -5,7 +5,7 @@
 ### Clone the git repo
 <pre>
   $ git clone git@github.com:steelThread/mimeoclient.git
-  $ cd groovy-aws
+  $ cd mimeoclient
   $ gradle
 </pre>
 
@@ -17,9 +17,9 @@ attempts to fetch dependencies there first before trying the other registered pu
 
 ## License 
 
-[Apache 2 License](https://github.com/steelThread/groovy-aws/blob/master/LICENSE.txt)
+[Apache 2 License](https://github.com/steelThread/mimeoclient/blob/master/LICENSE.txt)
 
 Copyright (c) 2011 Sean McDaniel
 
-#### Authors: [Sean McDaniel](http://www.mcdconsultingllc.com)
+#### Authors: [Sean McDaniel]()
 #### Contributors:

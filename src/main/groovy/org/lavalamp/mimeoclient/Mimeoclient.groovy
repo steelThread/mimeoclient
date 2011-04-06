@@ -10,7 +10,7 @@ import redis.clients.jedis.JedisPoolConfig
  # Protocol handler for communication with mimeograph.
  */
 abstract class Mimeoclient {
-  protected final static LOGGER = LoggerFactory.getLogger(Mimeoclient.class)
+  protected final static LOGGER = LoggerFactory.getLogger(Mimeoclient)
 
   protected def pool
   protected def subscriber
@@ -77,7 +77,7 @@ abstract class Mimeoclient {
   //
   class Subscriber extends JedisPubSubAdapter {
     void onPMessage(String pattern, String channel, String message) {
-      LOGGER.info "Received msg.  Channel -> {} : Message -> {}", channel, message
+      LOGGER.info 'Received msg.  Channel -> {} : Message -> {}', channel, message
       process decode(message)
     }
 
