@@ -10,6 +10,6 @@ ruleset {
   //  'PrintStackTrace' priority: 1 
   //}
   //ruleset('rulesets/naming.xml')
-  ruleset('rulesets/unnecessary.xml')
+  //ruleset('rulesets/unnecessary.xml')
   ruleset('rulesets/unused.xml')
 }

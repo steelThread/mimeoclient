@@ -83,8 +83,12 @@ abstract class Mimeoclient {
 
     def decode(message) {
       Jedis jedis = pool.resource
-      try { jedis.hgetAll message[0..<message.lastIndexOf(':')] }
-      finally {
+      try { 
+	    def key = message[0..<message.lastIndexOf(':')]
+	    def job = jedis.hgetAll(key)
+	    job.id  = key[key.lastIndexOf(':')+1..<key.length()]
+	    job
+	  } finally {
         pool.returnResource jedis
       }
     }
