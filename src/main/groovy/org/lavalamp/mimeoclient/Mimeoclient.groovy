@@ -54,7 +54,7 @@ abstract class Mimeoclient {
   // wrapping this method in a closure passed to
   // Thread.start
   //
-  def connect() {
+  def listen() {
     LOGGER.info 'Starting the subscriber.'
     Jedis jedis = new Jedis('localhost')
     jedis.psubscribe subscriber, 'mimeograph:job:*'
@@ -86,7 +86,7 @@ abstract class Mimeoclient {
       try { 
 	    def key = message[0..<message.lastIndexOf(':')]
 	    def job = jedis.hgetAll(key)
-	    job.id  = key[key.lastIndexOf(':')+1..<key.length()]
+	    job.id  = key[key.lastIndexOf(':') + 1..-1]
 	    job
 	  } finally {
         pool.returnResource jedis

@@ -41,7 +41,7 @@ class MimeoclientTest {
       Thread.sleep 1000
       client.end()
     }
-    client.connect()
+    client.listen()
     t.join()
   }
 
