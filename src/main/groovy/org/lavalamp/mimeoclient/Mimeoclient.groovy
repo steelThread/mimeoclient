@@ -6,9 +6,9 @@ import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
 import redis.clients.jedis.JedisPoolConfig
 
-/*
- # Protocol handler for communication with mimeograph.
- */
+//
+// Protocol handler for communication with mimeograph.
+//
 abstract class Mimeoclient {
   protected final static LOGGER = LoggerFactory.getLogger(Mimeoclient)
 
@@ -83,12 +83,12 @@ abstract class Mimeoclient {
 
     def decode(message) {
       Jedis jedis = pool.resource
-      try { 
-	    def key = message[0..<message.lastIndexOf(':')]
-	    def job = jedis.hgetAll(key)
-	    job.id  = key[key.lastIndexOf(':') + 1..-1]
-	    job
-	  } finally {
+      try {
+        def key = message[0..<message.lastIndexOf(':')]
+        def job = jedis.hgetAll(key)
+        job.id  = key[key.lastIndexOf(':') + 1..-1]
+        job
+      } finally {
         pool.returnResource jedis
       }
     }
