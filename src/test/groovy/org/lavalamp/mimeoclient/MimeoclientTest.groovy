@@ -72,12 +72,13 @@ class MimeoclientTest {
     def process(job) {
       assertNotNull job
       job.with {
-      assertEquals 'test', get('id')
-        assertEquals 'now', get('started')
-        assertEquals 'now', get('ended')
-        assertEquals 'text', get('text')
-        assertEquals 'success', get('status')
-        assertEquals '2', get('num_processed')
+        assertEquals 'test',                get('id')
+        assertEquals 'mimeograph:job:test', get('key')
+        assertEquals 'now',                 get('started')
+        assertEquals 'now',                 get('ended')
+        assertEquals 'text',                get('text')
+        assertEquals 'success',             get('status')
+        assertEquals '2',                   get('num_processed')
       }
     }
   }

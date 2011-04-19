@@ -86,6 +86,7 @@ abstract class Mimeoclient {
       try {
         def key = message[0..<message.lastIndexOf(':')]
         def job = jedis.hgetAll(key)
+        job.key = key
         job.id  = key[key.lastIndexOf(':') + 1..-1]
         job
       } finally {
